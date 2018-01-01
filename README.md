@@ -5,9 +5,9 @@ Over the last decade the Windows environment has become the most popular operati
 
 But, as Windows was introduced to the world, developers were also introduced to a totally new way of developing their software. Not only the structure of your program completely changed, you now also had to consider the Windows graphical user interface with all its shortcomings and pitfalls.
 
-The graphical user interface used in Windows known to developers as GDI (Graphical Device Interface) has, over the years, become the subject of many discussions and maybe even more mistakes. The GDI is known as a so called ‘state machine’ which for GDI basically means that, if you have used it you must leave it in the state you found it in when you started using it. Well, this may seem like a reasonable task but has caused many developer many late night hours of debugging and headaches.
+The graphical user interface used in Windows known to developers as GDI (Graphical Device Interface) has, over the years, become the subject of many discussions and maybe even more mistakes. The GDI is known as a so called ‘state machine’ which for GDI basically means that, if you have used it you must leave it in the state you found it when you're done using it. Well, this may seem like a reasonable task but has caused many developer many late night hours of debugging and headaches.
 
-This document will only cover one aspect of GDI and is probably one of the most misunderstood aspects of GDI in general. Therefore this document will focus on bitmaps and their palettes. I’ll assume you have some basic knowledge of Windows programming and know what a Device Context is. If you don’t, you’re probably not ready to read this document and you should get yourself some material on GDI and Windows programming in general.
+This document will only cover one aspect of GDI and is probably one of the most misunderstood aspects of GDI in general. Therefore this document will focus on bitmaps and their palettes. I’ll assume you have some basic knowledge of Windows programming and that you know what a Device Context is. If you don’t, you’re probably not ready to read this document and you should get yourself some material on GDI and Windows programming in general first.
 
 # DDB’s and DIB’s
 
@@ -32,12 +32,12 @@ The variable ‘g_hBitmap’ is a global defined variable of the type ‘HBITMAP
 ```c
 BOOL OnCreate(HWND hWnd, CREATESTRUCT FAR* lpCreateStruct)
 {
-	//-- Load a bitmap from the resource and store the
-	//   handle in 'g_hBitmap' which is a global handle.
-g_hBitmap = LoadBitmap(lpCreateStruct->hInstance, MAKEINTRESOURCE(IDB_BITMAP));
+	// Load a bitmap from the resource and store the
+	// handle in 'g_hBitmap' which is a global handle.
+	g_hBitmap = LoadBitmap(lpCreateStruct->hInstance, MAKEINTRESOURCE(IDB_BITMAP));
 
-	//-- If 'g_hBitmap' equals NULL then the bitmap failed
-	//   to load. Return FALSE to quit the program.
+	// If 'g_hBitmap' equals NULL then the bitmap failed
+	// to load. Return FALSE to quit the program.
 	if(!g_hBitmap)
 		return FALSE;
 
@@ -57,16 +57,16 @@ void OnPaint(HWND hWnd)
 
 	hDC = BeginPaint(hWnd, &ps);
 
-	//-- Create a DC for the bitmap and select it
-	//   into the created DC.
+	// Create a DC for the bitmap and select it
+	// into the created DC.
 	hBitmapDC = CreateCompatibleDC(hDC);
 	hOldBitmap = (HBITMAP)SelectObject(hBitmapDC, (HBITMAP)g_hBitmap);
 
-	//-- Display the bitmap into window
+	// Display the bitmap into window
 	GetObject((HBITMAP)g_hBitmap, sizeof(BITMAP), &bm);	
 	BitBlt(hDC, 0, 0, bm.bmWidth, bm.bmHeight, hBitmapDC, 0, 0, SRCCOPY);
 
-	//-- Delete the temporary bitmap DC
+	// Delete the temporary bitmap DC
 	SelectObject(hBitmapDC, hOldBitmap);
 	DeleteDC(hBitmapDC);
 
@@ -77,7 +77,7 @@ void OnPaint(HWND hWnd)
 You may notice a function in the OnPaint you may have never seen before, GetObject. With the GetObject function we can get more information on a GDI object. In this case we’re getting more information about the bitmap we’re going to display. To display the bitmap we need to know the width and height of the bitmap and GetObject is the easiest way to get this information. The function takes a handle to our bitmap, the size of the structure we want to fill and a pointer to the structure we want to fill. The structure we want to fill is of the type BITMAP and is defined in WINGDI.H like this:
 
 ```c
-typedef struct tagBITMAP {  // bm 
+typedef struct tagBITMAP { // bm
    LONG   bmType; 
    LONG   bmWidth; 
    LONG   bmHeight; 
@@ -97,9 +97,10 @@ When leaving our program we’ve got to delete the bitmap we’ve loaded with th
 ```c
 void OnDestroy(HWND hWnd)
 {
-	//-- If the handle is valid then destroy the bitmap.
-	if(g_hBitmap)
+	// If the handle is valid then destroy the bitmap.
+	if(g_hBitmap) {
 		DeleteObject(g_hBitmap);
+	}
 	
 	PostQuitMessage(0);
 }
@@ -112,14 +113,15 @@ Instead of using LoadBitmap we’re going to use the LoadImage API function. Thi
 ```c
 BOOL OnCreate(HWND hWnd, CREATESTRUCT FAR* lpCreateStruct)
 {
-	//-- Load a bitmap from the resource and store the
-	//   handle in 'g_hBitmap' which is a global handle.
+	// Load a bitmap from the resource and store the
+	// handle in 'g_hBitmap' which is a global handle.
 	g_hBitmap = (HBITMAP)LoadImage(lpCreateStruct->hInstance, MAKEINTRESOURCE(IDB_BITMAP), IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION);
  
-	//-- If 'g_hBitmap' equals NULL then the bitmap failed
-	//   to load. Return FALSE to quit the program.
-	if(!g_hBitmap)
+	// If 'g_hBitmap' equals NULL then the bitmap failed
+	// to load. Return FALSE to quit the program.
+	if(!g_hBitmap) {
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -270,7 +272,7 @@ typedef struct tagBITMAPINFO { // bmi
 As you can see above, this is how the BITMAPINFO structure is defined in WINGDI.H. It contains a BITMAPINFOHEADER structure and one RGBQUAD structure. The BITMAPINFOHEADER is defined as follows:
 
 ```c
-typedef struct tagBITMAPINFOHEADER{ // bmih 
+typedef struct tagBITMAPINFOHEADER { // bmih 
     DWORD	biSize; 
     LONG		biWidth; 
     LONG		biHeight; 
@@ -334,8 +336,7 @@ After setting the width and the height for the DIB we set the number of planes f
 Oke, now we’ve got the definition of our DIB ready, it’s time to initialize the palette for our DIB. Since we haven’t touched any of the RGB triplets in the palette, they’re probably containing some worthless data. Let’s initialize the 256 RGBQUAD’s to a nice grayscale palette.
 
 ```c
-for(int i = 0; i < 256; i++)
-{
+for(int i = 0; i < 256; i++) {
 	lpBmi->bmiColors[i].rgbRed	= (BYTE)i;
 	lpBmi->bmiColors[i].rgbGreen	= (BYTE)i;
 	lpBmi->bmiColors[i].rgbBlue	= (BYTE)i;
@@ -364,7 +365,7 @@ SetDIBitsToDevice(hDC,			// Target DC
 		  0,			// Starting scanline
 		  DIB_HEIGHT,		// Number of scanlines
 		  (BYTE*)pBits,		// Pointer to the DIB surface data
-		  lpBmi,			// Pointer to the BITMAPINFO struct.
+		  lpBmi,		// Pointer to the BITMAPINFO struct.
 		  DIB_RGB_COLORS);	// Display mode
 ```
 
