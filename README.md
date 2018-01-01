@@ -1,10 +1,10 @@
 # Programming Windows Bitmaps
 
-This document was originally written somewhere around 2002 and is based on the accumulative knowledge I required over the years from about 1997 up to 2001 having to work on a relativity low-level with Win32 bitmaps. I do not know if (at the time this document was published here on GitHub) whether or not this information is stll relevant. I haven't done any Windows programming for about 15 or so year.
+This document was originally written somewhere around 2002 and is based on the accumulative knowledge I required over the years from about 1997 up to 2001 having to work on a relativity low-level with Win32 bitmaps. I do not know if (at the time this document was published here on GitHub) whether or not this information is still relevant. I haven't done any Windows programming for about 12 or so years.
 
 I have taken the liberty to do some editing such as fixing spelling mistakes and reworking of super weird sentences, but on a whole, the document is pretty much in it's original form. If I would write this document today then I might write certain things differently.
 
-- January 2018
+Luke, January 2018
 
 
 ## Introduction
@@ -365,7 +365,7 @@ We now have got ourselves a nice little DIB that we can display. Remember that w
 
 ```c
 SetDIBitsToDevice(
-	hDC,			// Target DC
+  hDC,			// Target DC
   0,			// Destination X-coord.
   0,			// Destination Y-coord.
   DIB_WIDTH,		// DIB width in pixels
