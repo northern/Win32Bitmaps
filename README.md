@@ -238,19 +238,19 @@ Now that you understand monochrome and True Color bitmaps we will discuss the in
 
 The reason why this format is called ‘indexed’ is because it uses a color lookup table (CLUT) to display it’s colors. The pixel value you write into memory corresponds with a RGB tripple in the CLUT as figure 3 illustrates.
 
-~[Figure 3](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure3.png)
+![Figure 3](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure3.png)
 
 As you can see in the image above, the bytes in video memory corresponds with an index in the CLUT or better known as a palette. You can imagine that indexed formats can save a lot of memory. Instead of storing the same RGB value for a pixel over and over again it uses a simple indexing technique to represent colors. A down size to this technique is of course that the number of colors that can be displayed at once is limited (usually 256).
 
 On the other hand, HiColor formats work with direct RGB values. Although the pixels are only stored in 15 or 16 bits, HiColor images can still look very realistic. HiColor formats can be best compared with True Color formats because of the way the pixel stores RGB information instead of using a CLUT like in indexed formats. A downside of using HiColor formats is of course the loss of color information when a HiColor image is displayed.
 
-~[Figure 4](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure4.png)
+![Figure 4](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure4.png)
 
 As you can see in figure 4, the loss of color information can be noticed immediatly. On the left is a HiColor image and on the right the same image but in True Color. This is an artifact very common to HiColor images and when working with HiColor graphics you will have to take this into account. In the next paragraph it will become clear where this loss of color information comes from.
 
 As said before, HiColor formats use 15 or 16 bits to represent a pixels color. Just like the 24 bits in the True Color format are broken down into three components the same thing counts for the HiColor format. The 15 or 16 bits of the HiColor pixel value are also broken down to three different components, one for red, green and blue. Because we’ve got in HiColor 8 bits fewer to represent colors than in the True Color format we’ll have fewer bits to represent our red, green and blue.
 
-~[Figure 5](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure5.png)
+![Figure 5](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure5.png)
 
 As you can see in figure 5, for the 16 bit format the 16 bits are divided into groups. For the red component there are 5 bits reserved (bits 11-15). For the green component are 6 bits reserved (bits 5-10) and for the blue component, are just like the red component, are 5 bits reserved (bits 0-4). You my notice that the green component has 6 bits instead of 5 bits like the red en blue components. This is because the human eye is more sensitive to green than to red and blue. In the 15 bit format it works the same but for the green component only 5 bits are reserved and the most significant bit of the 16 bits is not used. Take a look again at figure 4 and look closely at the red and green parts of the left image. You may notice that the green part is less degraded than the red part. This is because this image was taken on 16 bits and for the green bits we’ve got one extra bit (6 instead of 5).
 
