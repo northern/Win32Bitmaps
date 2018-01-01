@@ -1,5 +1,6 @@
+# Programming Windows Bitmaps
 
-# About
+## About
 
 Over the last decade the Windows environment has become the most popular operating system known to the world. It’s the most used operating system and to this day, probably holds the biggest developers community. With the birth of the 32-bit version, the Windows environment has grown and proved to be a system not only to be used in a business environment but also to be a great system for the entertainment market. With the introduction of DirectX, Microsoft has set foot in the door to this market and Windows has become the number one operating system for games, multimedia and other graphical applications.
 
@@ -9,7 +10,7 @@ The graphical user interface used in Windows known to developers as GDI (Graphic
 
 This document will only cover one aspect of GDI and is probably one of the most misunderstood aspects of GDI in general. Therefore this document will focus on bitmaps and their palettes. I’ll assume you have some basic knowledge of Windows programming and that you know what a Device Context is. If you don’t, you’re probably not ready to read this document and you should get yourself some material on GDI and Windows programming in general first.
 
-# DDB’s and DIB’s
+## DDB’s and DIB’s
 
 Bitmaps are probably one of the most used GDI elements used in Windows. Without even noticing it, most of the elements you see on your screen are bitmaps. From the client-area of your window to the scrollbars and buttons you control your actions with. Although most of these elements are ‘drawn’ by GDI, they end up to be a bitmap. Most of the time you don’t have to worry about these things, GDI will handle most of the dirty work for you. As a user interface, Windows delivers a very good and robust system. Once you know how to handle GDI and are aware of some of the most basic pitfalls you can create very easily a user interface for your program.
 
@@ -19,7 +20,7 @@ DDB’s don’t really exist anymore. When Windows 95 was launched the DDB’s w
 
 DIB’s are far more easier to use and probably the best thing about them is: you’ve got total control over them! DIB’s can be referenced by a handle, just like a DDB. But DIB’s are no longer under the control of the display driver. In fact, a DIB can be of a totally different format than what your display is currently running in and this explains the “Independent” part of the DIB. Another great advantage is that you can create DIB’s from scratch and unlike DDB’s you’ve got total control over the data that make up the bitmap.
 
-# Loading and Saving a Bitmap
+## Loading and Saving a Bitmap
 
 In this section we start off by loading bitmaps using the GDI calls which are available through the Win32 API. I’m also going to show you how to display the loaded bitmap in the client area of your application’s window. The easiest way for us to load a bitmap is probably through the use of the LoadBitmap API call. This function will load a bitmap into memory and will return a handle to you. This way you can select the bitmap into a DC for displaying it in your applications window.
 
@@ -214,13 +215,13 @@ After creating the file with the _open statement we’re ready to write the firs
 
 You may have noticed that the way the bitmap data is calculated is not really the best way of doing this. Actually, the SaveBitmap function I created only works for 8 and 24 bits per pixel images. I don’t think this will be a big downside to the function because you probably will never use any other format since Windows bitmaps can not be stored in 15, 16 or even 32 bits per pixel but only indexed and 24bpp. If you want to store a different format, for example 4 bits per pixel (16 colors) you just have to change the code a little. I left it out in this example because it’s rarely used and would add to much overhead.
 
-# Creating a DIB from Scratch
+## Creating a DIB from Scratch
 
 In the previous section we touched on the subject of the DIB section. I explained that the DIB section holds a description of the bitmap. This tells us for example the width and height of a bitmap, but also the bit depth. Loading and saving a bitmap is one thing. Creating them from scratch is a totally different thing and you will need a good understanding of the inner workings of the DIB section and bitmaps in general to take full advantage of them.
 
 To create a DIB from scratch we’ll first need to understand how bitmaps work because we can not describe something we don’t understand. So I will first start with explaining some of the basics of bitmaps and then we’ll move on to creating our DIB section.
 
-## Bitmap Formats
+### Bitmap Formats
 
 Bitmaps can come in different flavors. We differentiate bitmaps from each other by the amount of color information that’s stored within them. We can have for example a bitmap that can only hold 2 distinct colors. We call this kind of bitmap a 1 bit bitmap because there’s only 1 bit per color needed to store the bitmap (these bitmaps are also known as monochrome bitmaps). As you can see in figure 1, a byte can hold up to eight pixel values. The ‘1’ in the bit values means there’s a color (usually white) and a ‘0’ in a bit value means there’s no color (usually black). As you can imagine, there’s usually very little memory needed to store a monochrome bitmap because a single byte can hold up to eight pixels.
 
@@ -258,7 +259,7 @@ You may have figured out by now where this degradation of color comes from in th
 
 You may have noticed by now that I’ve not covered the 32 bits format. This is because there is no such format as 32 bits per pixel. When dealing with 32 bits per pixel we’re actually dealing with 24 bits per pixel but they are only stored in 32 bits. This is because computers can handle 32 bits of data more efficient than 24 bits of data. One byte of the 32 bits color information is usually not used for color information. You can use this extra byte as an alpha value of as a z-buffer value. Whatever you like or what ever algorithm you’ve dreamed up you can use this extra byte for it.
 
-## The DIB Section
+### The DIB Section
 
 So, now that we know the basic bitmap formats let’s move on to the DIB Section. As stated before the DIB Section is a description of the bitmap. It tells Windows for example the width, height and color depth of our image. To create a DIB Section we need two structures that are defined in WINGDI.H (you do not need to include this file yourself, it’s done for you when you include WINDOWS.H in your program). These two structures are BITMAPINFO and BITMAPINFOHEADER. Actually, you just need the BITMAPINFO structure, because the BITMAPINFOHEADER structure is included within the BITMAPINFO structure.
 
@@ -274,14 +275,14 @@ As you can see above, this is how the BITMAPINFO structure is defined in WINGDI.
 ```c
 typedef struct tagBITMAPINFOHEADER { // bmih 
     DWORD	biSize; 
-    LONG		biWidth; 
-    LONG		biHeight; 
+    LONG	biWidth; 
+    LONG	biHeight; 
     WORD	biPlanes; 
     WORD	biBitCount 
     DWORD	biCompression; 
     DWORD	biSizeImage; 
-    LONG		biXPelsPerMeter; 
-    LONG		biYPelsPerMeter; 
+    LONG	biXPelsPerMeter; 
+    LONG	biYPelsPerMeter; 
     DWORD	biClrUsed; 
     DWORD	biClrImportant; 
 } BITMAPINFOHEADER;
@@ -446,7 +447,7 @@ As you can see there’s no need to allocate any extra space for our BitFields a
 
 If you like, you can now take a look at example 3. In this example I demonstrate the creation of a DIB and the use of StretchDIBits. In the OnCreate procedure I also write a pixel to the DIB surface, but that’s something I will explain in the following chapter.
 
-# Drawing to a DIB Surface Directly
+## Drawing to a DIB Surface Directly
 
 In the previous chapter we created our own DIB, but with only a DIB we can’t do very much. We also want to be able to draw to our DIB in order to show something on its surface. Normally you would use GDI to draw to your bitmaps, but because the DIB isn’t attached to a DC we can not use GDI to draw to our DIB. If you want you can attach your DIB to a DC but if you want to use it that way, the whole process of creating your own DIB would not be necessary and you should use normal bitmaps instead. The reason why we want to write our own graphics routines is because we can make them as fast as possible. GDI offers a great deal of drawing functionality but it’s usually very slow. With using GDI only, you would never be able to create a game running at a speed of 40 frames per second (or you should use a very fast machine).
 
