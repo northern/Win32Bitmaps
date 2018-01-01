@@ -224,13 +224,13 @@ To create a DIB from scratch we’ll first need to understand how bitmaps work b
 
 Bitmaps can come in different flavors. We differentiate bitmaps from each other by the amount of color information that’s stored within them. We can have for example a bitmap that can only hold 2 distinct colors. We call this kind of bitmap a 1 bit bitmap because there’s only 1 bit per color needed to store the bitmap (these bitmaps are also known as monochrome bitmaps). As you can see in figure 1, a byte can hold up to eight pixel values. The ‘1’ in the bit values means there’s a color (usually white) and a ‘0’ in a bit value means there’s no color (usually black). As you can imagine, there’s usually very little memory needed to store a monochrome bitmap because a single byte can hold up to eight pixels.
 
-
+![Figure 1](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure1.png)
 
 Nowadays, monochrome bitmaps are not used very much anymore. And especially not in high tech graphics programming (like games etc. although there is some usage for them, like in collision detection but that’s a whole different story which we won’t go into right now). 
 
 So, now we understand how monochrome bitmaps work, now let’s take a look at what’s at the other side. True Color bitmaps. With True Color bitmaps we can represent far more colors than just the two represented with monochrome bitmaps (black and white). With True Color bitmaps we can represent all the colors the human eye can see (that’s over 16 million). To store all those colors we’ll need a lot more space then that crammy little 1 bit used in monochrome bitmaps. True Color bitmaps are usually represented with 24 bits per pixel, so it’s not even possible to store one pixel in 1 byte. We’re going to need 3 bytes to store only one pixel!
 
-
+![Figure 2](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure2.png)
 
 As you can see in figure 2, the 24 bits that make up our pixel are divided into three distinct components. We’ve got a red, green and blue component, each of them 8 bits wide. When each component is 8 bits wide it’s range can be 0 – 255, meaning that ‘0’ is no color at all and ‘255’ the brightest it can be. When the three components are set to ‘0’ the pixel will be black. When the three components are set to ‘255’ the pixel will be bright white.
 
@@ -238,19 +238,19 @@ Now that you understand monochrome and True Color bitmaps we will discuss the in
 
 The reason why this format is called ‘indexed’ is because it uses a color lookup table (CLUT) to display it’s colors. The pixel value you write into memory corresponds with a RGB tripple in the CLUT as figure 3 illustrates.
 
-
+~[Figure 3](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure3.png)
 
 As you can see in the image above, the bytes in video memory corresponds with an index in the CLUT or better known as a palette. You can imagine that indexed formats can save a lot of memory. Instead of storing the same RGB value for a pixel over and over again it uses a simple indexing technique to represent colors. A down size to this technique is of course that the number of colors that can be displayed at once is limited (usually 256).
 
 On the other hand, HiColor formats work with direct RGB values. Although the pixels are only stored in 15 or 16 bits, HiColor images can still look very realistic. HiColor formats can be best compared with True Color formats because of the way the pixel stores RGB information instead of using a CLUT like in indexed formats. A downside of using HiColor formats is of course the loss of color information when a HiColor image is displayed.
 
-
+~[Figure 4](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure4.png)
 
 As you can see in figure 4, the loss of color information can be noticed immediatly. On the left is a HiColor image and on the right the same image but in True Color. This is an artifact very common to HiColor images and when working with HiColor graphics you will have to take this into account. In the next paragraph it will become clear where this loss of color information comes from.
 
 As said before, HiColor formats use 15 or 16 bits to represent a pixels color. Just like the 24 bits in the True Color format are broken down into three components the same thing counts for the HiColor format. The 15 or 16 bits of the HiColor pixel value are also broken down to three different components, one for red, green and blue. Because we’ve got in HiColor 8 bits fewer to represent colors than in the True Color format we’ll have fewer bits to represent our red, green and blue.
 
-
+~[Figure 5](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure5.png)
 
 As you can see in figure 5, for the 16 bit format the 16 bits are divided into groups. For the red component there are 5 bits reserved (bits 11-15). For the green component are 6 bits reserved (bits 5-10) and for the blue component, are just like the red component, are 5 bits reserved (bits 0-4). You my notice that the green component has 6 bits instead of 5 bits like the red en blue components. This is because the human eye is more sensitive to green than to red and blue. In the 15 bit format it works the same but for the green component only 5 bits are reserved and the most significant bit of the 16 bits is not used. Take a look again at figure 4 and look closely at the red and green parts of the left image. You may notice that the green part is less degraded than the red part. This is because this image was taken on 16 bits and for the green bits we’ve got one extra bit (6 instead of 5).
 
@@ -327,7 +327,7 @@ lpBmi->bmiHeader.biClrImportant = 0;
 
 As you can see, the first member we’ll set is the biSize member of the BITMAPINFOHEADER. We have to set this member to the size of the structure because this is the way Windows does it’s version checking on structures. When Microsoft changes a structure (for example adds a new member to it) it’s size will also change. The second two members are the width and height of our DIB. This, as you already guessed, sets the width and height for our DIB. But notice something strange in setting the height value! Instead of setting it to DIB_HEIGHT it’s being set to –DIB_HEIGHT. What’s going on? Well, Windows uses a strange way of handling it’s DIB’s. Standard, DIB’s (and bitmaps) are so called bottom-up. This means that the highest scanline within the bitmap is actually the lowest within the image. As scanlines progresses they travel upwards instead of downwards. Take a look at figure 6.
 
-
+![Figure 6](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure6.png)
 
 As you can see on the left, this is a normal situation. This is a Top Down DIB. But on the right side you’ll see a Bottom Up situation which it’s Windows default mode. To make sure the DIB is Top Down we’ll have to set it’s height value to a negative number. The reason why this is possible, i’m not sure at the time of this writing. Maybe there is some video hardware that works the other way around (building up it’s display image from bottom to top, I don’t know). Anyways, just try to remember this and I suggest you do some experimenting of your own with the height value so you can see it all for yourself.
 
@@ -405,7 +405,7 @@ pBmi[3] = 0x00000000;	// Not used (Alpha?)
 
 In 32 bits per pixel our pixels are represented using a DWORD (4 bytes). Within that DWORD are our red, green and blue components stored in some kind of order. You can not always take for granted that it’s the same order on every video board, although most of the time it is. Take a look at figure 7 (one of my other crappy illustrations ;) It shows two different kind of formats you can have in 32 bits per pixel. (The second one should read “Blue / Green / Red”)
 
-
+![Figure 7](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure7.png)
 
 As you can see, the highest byte (the one on the left) is reserved for our Alpha value. But in both images it shows an example of RGB and BGR. We have to let Windows know where in the DWORD our red, green and blue values are stored. We do this by creating a mask. In the case of ARGB the red mask will be 0x00FF0000, the green mask will be 0x0000FF00 and the blue mask will be 0x000000FF. The same thing counts of course if we were to create a 15 or 16 bit DIB. The masks will look like this:
 
@@ -464,7 +464,7 @@ void PutPixel(int x, int y, int color, void* pSurface)
 
 This code will actually not make it through your compiler because of the void*. I will try to explain how this piece of code works and how it can make it through the compiler. First we have to understand the first line: int offset = y * DIB_WIDTH + x; In reality computers do not understand what a x- and y-axis is. It only understands that is has some block of memory and that it can place values into the bytes that makeup that block of memory. In fact, when we look at an image on the computer display we see it has a dimension, like a width and height. But to your computer the image in memory is just one big stream of data with a beginning and an ending.
 
-
+![Figure 8](https://raw.githubusercontent.com/northern/Win32Bitmaps/master/images/figure8.png)
 
 As you can see in figure 8, the image is just one big stream of data. But that stream of data is buildup out of the information of our scanlines. Let’s assume for example that our DIB is 320 pixel wide and 240 pixels in height. If we want to display a pixel in the middle of our DIB’s surface we will have to calculate an offset to the position of that pixel. The first thing we must do then is to calculate the scanline on which our pixel will be displayed. Since we know our DIB is 320 pixel wide then we can also assume one scanline of our DIB is 320 pixels wide. We would have to move our pointer to the scanline of our pixel by 320 times the y-axis of our pixel, 320 * y. The only thing that’s left to do is adding the x-axis to the offset and where done. So, to put a pixel in the middle of our DIB surface the formula will be:
 
