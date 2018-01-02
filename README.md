@@ -1,11 +1,12 @@
 # Programming Windows Bitmaps
 
-This document was originally written somewhere around 2002 and is based on the accumulative knowledge I required over the years from about 1997 up to 2001 having to work on a relativity low-level with Win32 bitmaps. I do not know if (at the time this document was published here on GitHub) whether or not this information is still relevant. I haven't done any Windows programming for about 12 or so years.
+This document was originally written somewhere around 2002 and is based on the accumulative knowledge I required over the years from about 1996 up to 2001 having to work on a number of Windows applications that required a relativity low-level handling of Win32 bitmaps. I do not know if any of this information is still relevant. I haven't done any Windows programming for about 15 years or so.
 
-I have taken the liberty to do some editing such as fixing spelling mistakes and reworking of super weird sentences, but on a whole, the document is pretty much in it's original form. If I would write this document today then I might write certain things differently.
+I have taken the liberty to do some editing such as fixing spelling mistakes and reworking of super weird sentences, but on a whole, the document is pretty much in it's original form. If I would write this document today then I probably write certain things differently.
+
+I haven't compiled or tested the examples for this publication. I noticed that the code was written in a C like C++ dialect. I guess that at the time the C++ compiler was more forgiving than a C compiler was (i.e. less strict). In those days though, I was using both Microsoft Visual C/C++ and Watcom C/C++ compilers, so the code should work with either of those (from that era).
 
 Luke, January 2018
-
 
 ## Introduction
 
